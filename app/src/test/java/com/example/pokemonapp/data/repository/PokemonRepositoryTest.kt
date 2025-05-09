@@ -1,9 +1,9 @@
-package com.example.pokemonapp
+package com.example.pokemonapp.data.repository
 
 import com.example.pokemonapp.data.model.Pokemon
 import com.example.pokemonapp.data.model.PokemonDetail
+import com.example.pokemonapp.data.model.PokemonListResponse
 import com.example.pokemonapp.data.network.PokemonApi
-import com.example.pokemonapp.data.repository.PokemonRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -24,7 +24,7 @@ class PokemonRepositoryTest {
     @Test
     fun `getPokemonList returns list of pokemon`() = runBlocking {
         val mockPokemon = listOf(Pokemon("bulbasaur", "url"))
-        coEvery { api.getPokemonList(offset = 0) } returns PokemonApi.PokemonListResponse(mockPokemon)
+        coEvery { api.getPokemonList(offset = 0) } returns PokemonListResponse(mockPokemon)
 
         val result = repository.getPokemonList(0)
 

@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokemonapp.data.model.Pokemon
 import com.example.pokemonapp.data.model.PokemonDetail
-import com.example.pokemonapp.data.repository.PokemonRepository
+import com.example.pokemonapp.domain.repository.PokemonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -26,10 +27,6 @@ class PokemonViewModel @Inject constructor(
 
     private val _pokemonDetailState = MutableStateFlow<Result<PokemonDetail>?>(null)
     val pokemonDetailState: StateFlow<Result<PokemonDetail>?> = _pokemonDetailState
-
-    init {
-        loadPokemonList()
-    }
 
     fun loadPokemonList(offset: Int = 0) {
         viewModelScope.launch {

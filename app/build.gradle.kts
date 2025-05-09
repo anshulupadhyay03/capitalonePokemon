@@ -47,7 +47,8 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/{AL2.0,LGPL2.1,LICENSE.md,LICENSE,LICENSE.txt,license.txt," +
+                    "LICENSE.apache,LICENSE-APACHE.txt,META-INF/DEPENDENCIES}" // Added to resolve conflict
         }
     }
 }
@@ -81,4 +82,5 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    testImplementation(libs.kotlin.test)
 }

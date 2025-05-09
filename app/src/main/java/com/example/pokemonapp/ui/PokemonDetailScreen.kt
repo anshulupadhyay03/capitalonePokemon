@@ -20,6 +20,7 @@ import com.example.pokemonapp.ui.viewmodel.PokemonViewModel
 import com.example.pokemonapp.ui.viewmodel.Result
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun PokemonDetailScreen(
@@ -27,7 +28,9 @@ fun PokemonDetailScreen(
     onBackClick: () -> Unit,
     viewModel: PokemonViewModel = hiltViewModel()
 ) {
-    viewModel.loadPokemonDetail(name)
+    LaunchedEffect(Unit) {
+        viewModel.loadPokemonDetail(name)
+    }
     val pokemonDetailState = viewModel.pokemonDetailState.collectAsState()
 
     Box(
