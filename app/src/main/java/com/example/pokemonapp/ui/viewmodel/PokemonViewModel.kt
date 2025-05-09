@@ -1,29 +1,31 @@
 package com.example.pokemonapp.ui.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokemonapp.data.model.Pokemon
 import com.example.pokemonapp.data.model.PokemonDetail
 import com.example.pokemonapp.data.repository.PokemonRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+sealed class Result<out T> {
+    data object Loading : Result<Nothing>()
+    data class Success<out T>(val data: T) : Result<T>()
+    data class Error(val message: String) : Result<Nothing>()
+}
 
 @HiltViewModel
 class PokemonViewModel @Inject constructor(
     private val repository: PokemonRepository
 ) : ViewModel() {
-    var pokemonList by mutableStateOf<List<Pokemon>>(emptyList())
-        private set
-    var pokemonDetail by mutableStateOf<PokemonDetail?>(null)
-        private set
-    var isLoading by mutableStateOf(false)
-        private set
-    var error by mutableStateOf<String?>(null)
-        private set
+    private val _pokemonListState = MutableStateFlow<Result<List<Pokemon>>>(Result.Loading)
+    val pokemonListState: StateFlow<Result<List<Pokemon>>> = _pokemonListState
+
+    private val _pokemonDetailState = MutableStateFlow<Result<PokemonDetail>?>(null)
+    val pokemonDetailState: StateFlow<Result<PokemonDetail>?> = _pokemonDetailState
 
     init {
         loadPokemonList()
@@ -31,28 +33,24 @@ class PokemonViewModel @Inject constructor(
 
     fun loadPokemonList(offset: Int = 0) {
         viewModelScope.launch {
-            isLoading = true
+            _pokemonListState.value = Result.Loading
             try {
-                pokemonList = repository.getPokemonList(offset)
-                error = null
+                val pokemonList = repository.getPokemonList(offset)
+                _pokemonListState.value = Result.Success(pokemonList)
             } catch (e: Exception) {
-                error = e.message
-            } finally {
-                isLoading = false
+                _pokemonListState.value = Result.Error(e.message ?: "Unknown error")
             }
         }
     }
 
     fun loadPokemonDetail(name: String) {
         viewModelScope.launch {
-            isLoading = true
+            _pokemonDetailState.value = Result.Loading
             try {
-                pokemonDetail = repository.getPokemonDetail(name)
-                error = null
+                val pokemonDetail = repository.getPokemonDetail(name)
+                _pokemonDetailState.value = Result.Success(pokemonDetail)
             } catch (e: Exception) {
-                error = e.message
-            } finally {
-                isLoading = false
+                _pokemonDetailState.value = Result.Error(e.message ?: "Unknown error")
             }
         }
     }

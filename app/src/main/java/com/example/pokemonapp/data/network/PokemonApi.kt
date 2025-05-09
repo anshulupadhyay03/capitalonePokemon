@@ -1,7 +1,7 @@
 package com.example.pokemonapp.data.network
 
-import com.example.pokemonapp.data.model.Pokemon
 import com.example.pokemonapp.data.model.PokemonDetail
+import com.example.pokemonapp.data.model.PokemonListResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -15,8 +15,4 @@ interface PokemonApi {
 
     @GET("pokemon/{name}")
     suspend fun getPokemonDetail(@Path("name") name: String): PokemonDetail
-
-    data class PokemonListResponse(
-        val results: List<Pokemon>
-    )
 }

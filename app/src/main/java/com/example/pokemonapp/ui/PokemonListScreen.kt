@@ -6,24 +6,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.pokemonapp.data.model.Pokemon
 import com.example.pokemonapp.ui.viewmodel.PokemonViewModel
+import com.example.pokemonapp.ui.viewmodel.Result
 
 @Composable
 fun PokemonListScreen(
     onPokemonClick: (String) -> Unit,
     viewModel: PokemonViewModel = hiltViewModel()
 ) {
-    val pokemonList = viewModel.pokemonList
-    val isLoading = viewModel.isLoading
-    val error = viewModel.error
+    val pokemonListState = viewModel.pokemonListState.collectAsState()
 
-    when {
-        isLoading -> {
+    when (val state = pokemonListState.value) {
+        is Result.Loading -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -31,25 +31,29 @@ fun PokemonListScreen(
                 CircularProgressIndicator()
             }
         }
-        error != null -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "Error: $error")
-            }
-        }
-        else -> {
+        is Result.Success -> {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(pokemonList) { pokemon ->
+                items(state.data) { pokemon ->
                     PokemonListItem(
                         pokemon = pokemon,
                         onClick = { onPokemonClick(pokemon.name) }
                     )
                 }
+            }
+        }
+        is Result.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Error: ${state.message}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
