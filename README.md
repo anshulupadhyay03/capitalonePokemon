@@ -18,6 +18,10 @@ A simple Android application that fetches and displays a list of Pokémon using 
 - **Error Handling**: Basic error handling is implemented, but a more robust solution with retry mechanisms and user-friendly error messages could be added.
 - **Caching**: No offline caching is implemented. Room database integration would enable offline support.
 - **Additional Tests**: More comprehensive unit tests (e.g., for ViewModel) and additional UI tests could be added for better coverage.
+- Proper use of clean architecture
+- Missing features like search, filter etc
+- Handle UI for landscape mode
+- support for dark and light theme
 
 ## Additional Notes
 
